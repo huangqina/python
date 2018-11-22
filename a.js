@@ -1,0 +1,1 @@
+var i =  prompt("input","20")
