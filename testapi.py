@@ -30,7 +30,7 @@ def re():
 @app.route('/show')
 def rei():
     return render_template("a.html")
-@app.route('/finddefect', methods=['GET'])
+@app.route('/finddefect', methods=['GET','POST'])
 def find(): 
     #user = mongo.db.users 
     collection = mongo.db.Panel
@@ -52,10 +52,11 @@ def find():
          {'$match':{ "Panel_ID": ID }},
          {'$lookup':{'from':"Defect","localField":"Defect_ID",   "foreignField":"ID","as":"Defect"}
          },{'$project':{"Defect":{"_id":0}}}],"as": "Defects"}}]))
-    #a=str('ID:'+str(k[0]['ID'])+'  '+'Barcode:' + str(k[0]['Barcode'])+'  '+'type:'+str(k[0]['type'])+'  '+ 'size:'+ str(k[0]['size']) +'  '+'EL_no:'+ str(k[0]['EL_no']))
+   # a=str('ID:'+str(k[0]['ID'])+'  '+'Barcode:' + str(k[0]['Barcode'])+'  '+'type:'+str(k[0]['type'])+'  '+ 'size:'+ str(k[0]['size']) +'  '+'EL_no:'+ str(k[0]['EL_no']))
 
     #return str(a)+'\n'+str(k[0]['Defects'])
-    return str(k[0]['Defects'])
+    #return str(k[0]['Defects'])
+    return jsonify(k)
     # for i in k['Defects']:
           #  print(i['Defect'])
 @app.route('/adduser', methods=['POST'])
@@ -136,7 +137,7 @@ def add_panel():
   new_star = star.find_one({'_id': star_id })
   output = {'ID':
    new_star['ID'], 'Barcode': new_star['Barcode'],'Type':new_star['type'], 'Size':new_star['size'],'EL_no':new_star['EL_no']}
-  return jsonify({'result' : output})
+  return jsonify(output)
 @app.route('/adddefect', methods=['POST'])
 def add_defect():
   star = mongo.db.Defect
@@ -155,7 +156,7 @@ def add_defect():
   #output = {'ID':
    #new_star['ID'], 'Barcode': new_star['Barcode'],'Type':new_star['Type'], 'Size':new_star['Size'],'EL_no':new_star['EL_no']}
   #return jsonify({'result' : output})
-@app.route('/findbytime', methods=['GET']) 
+@app.route('/findbytime', methods=['GET','POST']) 
 def findbytime(): 
     start = float(request.args['start'])
     end = float(request.args['end'])
@@ -171,8 +172,8 @@ def findbytime():
     if a:
         return str('OK'+':'+str(a[0]['count'])+' '+'Defect'+':'+str(a[1]['count']))
     else:
-        return 'None'
-@app.route('/missrate', methods=['GET']) 
+        return 'False'
+@app.route('/missrate', methods=['GET','POST']) 
 def missrate(): 
    # start = int(request.args['start'])
    # end = int(request.args['end'])
@@ -186,7 +187,7 @@ def missrate():
     ]
     ))
     return str(a[0]['count']/(a[1]['count']+a[0]['count']))
-@app.route('/overkillrate', methods=['GET']) 
+@app.route('/overkillrate', methods=['GET','POST']) 
 def overkillrate(): 
    # start = int(request.args['start'])
    # end = int(request.args['end'])
@@ -207,7 +208,7 @@ def overkillrate():
     else:
         return 'None'
     return str(a[1]['count']/(a[1]['count']+a[0]['count']))
-@app.route('/defecttime', methods=['GET']) 
+@app.route('/defecttime', methods=['GET','POST']) 
 def defecttime(): 
    # start = int(request.args['start'])
    # end = int(request.args['end'])

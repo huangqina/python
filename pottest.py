@@ -15,9 +15,16 @@ a = eval(l.text)
 for i in a:
     print(i)
 #print(l.text)
+Time = time.time()
+user_info = {'ID': 88888+10000, 'Type' : 'Type', 'Position': 'Position','By': 'By','Time': Time,'Size': 'Size','PanelID':88888+10000}
+r = requests.post("http://127.0.0.1:8080/adddefect", user_info)
+#    r = requests.post("http://127.0.0.1:8080/adddefect", user_info)
 ti = datetime.datetime(2018,11,23,10,17,45)
 start = time.mktime(ti.timetuple())
 end = time.time()
 info = {'start':start,'end':end}
 t = requests.get("http://127.0.0.1:8080/defecttime",info)
 print(t.text)
+#isn={'ID': 2, 'Barcode' : 5, 'Type': 3,'Size': 3,'EL_no': 3}
+#d = requests.post("http://127.0.0.1:8080/addpanel",isn)
+#print(d.text)
