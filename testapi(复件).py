@@ -2,7 +2,6 @@
 #mongo.py
 from flask import Flask,abort
 from flask import jsonify
-from flask import render_template
 from flask import request
 from flask_pymongo import PyMongo
 from flask_script import Manager
@@ -27,9 +26,6 @@ manager = Manager(app)
 @app.route('/')
 def re():
     return '<p>192.168.2.25:8080/finddefect     #defect of certain panel with given barcode</p><p>192.168.2.25:8080/adduser     #Insert  user</p><p>192.168.2.25:8080/addpanel      #Insert  panel</p><p>192.168.2.25:8080/defect      #Insert  defect</p><p>192.168.2.25:8080/findbytime       #no. of defect panel in given time period no. of ok panel in given time period</p><p>192.168.2.25:8080/missrate     #miss rate (new annotation by operator / cells checked)</p><p>192.168.2.25:8080/overkillrate     #overkill rate (deleted AI annotation by operator / cells checked)</p><p>192.168.2.25:8080/defecttime     #no. of certain defect in given time period</p>'
-@app.route('/show')
-def rei():
-    return render_template("a.html")
 @app.route('/finddefect', methods=['GET'])
 def find(): 
     #user = mongo.db.users 
@@ -51,11 +47,10 @@ def find():
          {"_id":0,"Defect_ID":1,"Panel_ID":1}},
          {'$match':{ "Panel_ID": ID }},
          {'$lookup':{'from':"Defect","localField":"Defect_ID",   "foreignField":"ID","as":"Defect"}
-         },{'$project':{"Defect":{"_id":0}}}],"as": "Defects"}}]))
-    #a=str('ID:'+str(k[0]['ID'])+'  '+'Barcode:' + str(k[0]['Barcode'])+'  '+'type:'+str(k[0]['type'])+'  '+ 'size:'+ str(k[0]['size']) +'  '+'EL_no:'+ str(k[0]['EL_no']))
+         }],"as": "Defects"}}]))
+    a=str('ID:'+str(k[0]['ID'])+'  '+'Barcode:' + str(k[0]['Barcode'])+'  '+'type:'+str(k[0]['type'])+'  '+ 'size:'+ str(k[0]['size']) +'  '+'EL_no:'+ str(k[0]['EL_no']))
 
-    #return str(a)+'\n'+str(k[0]['Defects'])
-    return str(k[0]['Defects'])
+    return str(a)+'\n'+str(k[0]['Defects'])
     # for i in k['Defects']:
           #  print(i['Defect'])
 @app.route('/adduser', methods=['POST'])
@@ -70,60 +65,6 @@ def add_user():
   output = {'ID':
    new_star['ID'], 'Type': new_star['Type'],'Name':new_star['Name'], 'PW':new_star['PW']}
   return jsonify({'result' : output})
-@app.route('/addPanelstatus', methods=['POST'])
-def add_Panelstatus():
-  star = mongo.db.Panel_status
-  PanelID = request.form['PanelID']
-  Time = request.form['Time']
-  Result = request.form['Result']
-  By = request.form['By']
-  star_id = star.insert({'PanelID': int(PanelID), 'Time': Time,'Result':Result,'By':By})
-  new_star = star.find_one({'_id': star_id })
-  a = new_star
-  #output = {'ID':
-   #new_star['ID'], 'Type': new_star['Type'],'Name':new_star['Name'], 'PW':new_star['PW']}
-  #return jsonify({'result' : output})
-  return str(a)
-@app.route('/addUserlog', methods=['POST'])
-def add_Userlog():
-  star = mongo.db.User_log
-  User_ID = request.form['User_ID']
-  GUI_ID = request.form['GUI_ID']
-  Time = request.form['Time']
-  PW = request.form['PW']
-  Action = request.form['Action']
-  star_id = star.insert({'User_ID': float(User_ID), 'GUI_ID': GUI_ID,'Time':Time,'PW':PW,'Action':Action})
-  new_star = star.find_one({'_id': star_id })
-  a = new_star
-  #output = {'ID':
-   #new_star['ID'], 'Type': new_star['Type'],'Name':new_star['Name'], 'PW':new_star['PW']}
-  #return jsonify({'result' : output})
-  return str(a)
-@app.route('/addAI', methods=['POST'])
-def add_ai():
-  star = mongo.db.AI
-  ID = request.form['AI_ID']
-  AI_mode = request.form['AI_mode']
-  AI_parameter = request.form['AI_parameter']
-  star_id = star.insert({'AI_ID': int(ID), 'AI_mode': AI_mode,'AI_parameter': AI_parameter})
-  new_star = star.find_one({'_id': star_id })
-  a = new_star
-  #output = {'ID':
-   #new_star['ID'], 'Type': new_star['Type'],'Name':new_star['Name'], 'PW':new_star['PW']}
-  #return jsonify({'result' : output})
-  return str(a)
-@app.route('/addEL', methods=['POST'])
-def add_EL():
-  star = mongo.db.EL
-  EL_no = request.form['EL_no']
-  EL_location = request.form['EL_location']
-  star_id = star.insert({'EL_no': float(EL_no), 'EL_location': EL_location})
-  new_star = star.find_one({'_id': star_id })
-  a = new_star
-  #output = {'ID':
-   #new_star['ID'], 'Type': new_star['Type'],'Name':new_star['Name'], 'PW':new_star['PW']}
-  #return jsonify({'result' : output})
-  return str(a)
 @app.route('/addpanel', methods=['POST'])
 def add_panel():
   star = mongo.db.Panel
