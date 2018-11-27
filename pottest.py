@@ -9,7 +9,7 @@ import datetime
 #    r = requests.post("http://127.0.0.1:8080/adddefect", user_info)
 use_info = {'Barcode': 1,'name':1}
 #url = 'http://127.0.0.1:8080/finddefect' + use_info['ID']
-l = requests.get("http://127.0.0.1:8080/finddefect", use_info)
+l = requests.get("http://127.0.0.1:8080/find/defect", use_info)
 #a = eval(str(l.txt))
 a = eval(l.text)
 for i in a:

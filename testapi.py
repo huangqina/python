@@ -30,7 +30,7 @@ def re():
 @app.route('/show')
 def rei():
     return render_template("a.html")
-@app.route('/finddefect', methods=['GET','POST'])
+@app.route('/find/defect', methods=['GET','POST'])
 def find(): 
     #user = mongo.db.users 
     collection = mongo.db.Panel
@@ -59,7 +59,7 @@ def find():
     return jsonify(k)
     # for i in k['Defects']:
           #  print(i['Defect'])
-@app.route('/adduser', methods=['POST'])
+@app.route('/add/user', methods=['POST'])
 def add_user():
   star = mongo.db.User
   ID = request.form['ID']
@@ -71,11 +71,11 @@ def add_user():
   output = {'ID':
    new_star['ID'], 'Type': new_star['Type'],'Name':new_star['Name'], 'PW':new_star['PW']}
   return jsonify({'result' : output})
-@app.route('/addPanelstatus', methods=['POST'])
+@app.route('/add/Panelstatus', methods=['POST'])
 def add_Panelstatus():
   star = mongo.db.Panel_status
   PanelID = request.form['PanelID']
-  Time = request.form['Time']
+  Time = float(request.form['Time'])
   Result = request.form['Result']
   By = request.form['By']
   star_id = star.insert({'PanelID': int(PanelID), 'Time': Time,'Result':Result,'By':By})
@@ -85,7 +85,7 @@ def add_Panelstatus():
    #new_star['ID'], 'Type': new_star['Type'],'Name':new_star['Name'], 'PW':new_star['PW']}
   #return jsonify({'result' : output})
   return str(a)
-@app.route('/addUserlog', methods=['POST'])
+@app.route('/add/Userlog', methods=['POST'])
 def add_Userlog():
   star = mongo.db.User_log
   User_ID = request.form['User_ID']
@@ -100,7 +100,7 @@ def add_Userlog():
    #new_star['ID'], 'Type': new_star['Type'],'Name':new_star['Name'], 'PW':new_star['PW']}
   #return jsonify({'result' : output})
   return str(a)
-@app.route('/addAI', methods=['POST'])
+@app.route('/add/AI', methods=['POST'])
 def add_ai():
   star = mongo.db.AI
   ID = request.form['AI_ID']
@@ -113,7 +113,7 @@ def add_ai():
    #new_star['ID'], 'Type': new_star['Type'],'Name':new_star['Name'], 'PW':new_star['PW']}
   #return jsonify({'result' : output})
   return str(a)
-@app.route('/addEL', methods=['POST'])
+@app.route('/add/EL', methods=['POST'])
 def add_EL():
   star = mongo.db.EL
   EL_no = request.form['EL_no']
@@ -125,7 +125,7 @@ def add_EL():
    #new_star['ID'], 'Type': new_star['Type'],'Name':new_star['Name'], 'PW':new_star['PW']}
   #return jsonify({'result' : output})
   return str(a)
-@app.route('/addpanel', methods=['POST'])
+@app.route('/add/panel', methods=['POST'])
 def add_panel():
   star = mongo.db.Panel
   ID = request.form['ID']
@@ -138,7 +138,7 @@ def add_panel():
   output = {'ID':
    new_star['ID'], 'Barcode': new_star['Barcode'],'Type':new_star['type'], 'Size':new_star['size'],'EL_no':new_star['EL_no']}
   return jsonify(output)
-@app.route('/adddefect', methods=['POST'])
+@app.route('/add/defect', methods=['POST'])
 def add_defect():
   star = mongo.db.Defect
   s = mongo.db.Panel_Defect
@@ -156,24 +156,47 @@ def add_defect():
   #output = {'ID':
    #new_star['ID'], 'Barcode': new_star['Barcode'],'Type':new_star['Type'], 'Size':new_star['Size'],'EL_no':new_star['EL_no']}
   #return jsonify({'result' : output})
-@app.route('/findbytime', methods=['GET','POST']) 
-def findbytime(): 
+@app.route('/find/OK', methods=['GET','POST']) 
+def findOK(): 
     start = float(request.args['start'])
     end = float(request.args['end'])
     a=list(mongo.db.Panel_status.aggregate([
-    {'$match':{'time':{'$gt':start,'$lt':end}}},
+    {"$match":{'Time':{"$gt":start,"$lt":end}}},
     {
-    '$group':{
-        '_id' : "$result"
+    "$group":{
+        '_id' : "$Result"
             ,
-        'count':{'$sum':1}}}
+        'count':{"$sum":1}}}
     ]
     ))
+    return jsonify(a[0])
+    '''
     if a:
         return str('OK'+':'+str(a[0]['count'])+' '+'Defect'+':'+str(a[1]['count']))
     else:
         return 'False'
-@app.route('/missrate', methods=['GET','POST']) 
+    '''
+@app.route('/find/NG', methods=['GET','POST']) 
+def findNG(): 
+    start = float(request.args['start'])
+    end = float(request.args['end'])
+    a=list(mongo.db.Panel_status.aggregate([
+    {"$match":{'Time':{"$gt":start,"$lt":end}}},
+    {
+    "$group":{
+        '_id' : "$Result"
+            ,
+        'count':{"$sum":1}}}
+    ]
+    ))
+    return jsonify(a[1])
+    '''
+    if a:
+        return str('OK'+':'+str(a[0]['count'])+' '+'Defect'+':'+str(a[1]['count']))
+    else:
+        return 'False'
+    '''
+@app.route('/find/missrate', methods=['GET','POST']) 
 def missrate(): 
    # start = int(request.args['start'])
    # end = int(request.args['end'])
@@ -187,15 +210,16 @@ def missrate():
     ]
     ))
     return str(a[0]['count']/(a[1]['count']+a[0]['count']))
-@app.route('/overkillrate', methods=['GET','POST']) 
+
+@app.route('/find/overkillrate', methods=['GET','POST']) 
 def overkillrate(): 
    # start = int(request.args['start'])
    # end = int(request.args['end'])
     #{'$match':{'time':{'$gt':start,'$lt':end}}},
-    start = float(request.args['start'])
-    end = float(request.args['end'])
+    #start = float(request.args['start'])
+    #end = float(request.args['end'])
     a=list(mongo.db.Panel_status.aggregate([
-    {'$match':{'time':{'$gt':start,'$lt':end}}},
+    #{'$match':{'time':{'$gt':start,'$lt':end}}},
     {
     '$group':{
         '_id' : "$result"
@@ -203,12 +227,14 @@ def overkillrate():
         'count':{'$sum':1}}}
     ]
     ))
+    '''
     if a:
         return str(a)
     else:
         return 'None'
+    '''
     return str(a[1]['count']/(a[1]['count']+a[0]['count']))
-@app.route('/defecttime', methods=['GET','POST']) 
+@app.route('/find/defect', methods=['GET','POST']) 
 def defecttime(): 
    # start = int(request.args['start'])
    # end = int(request.args['end'])
