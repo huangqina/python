@@ -1,5 +1,5 @@
 import requests
-#import json
+import json
 import time 
 import datetime
 
@@ -32,6 +32,8 @@ for i in range(100):
 ti = datetime.datetime(2018,11,23,10,17,45)
 start = time.mktime(ti.timetuple())
 end = time.time()
-info = {'start':start,'end':end}
-t = requests.get("http://127.0.0.1:8080/find/OK",info)
+#info = { 'barcode':'13245', 'cell_type':'mono','cell_size':'half', 'cell_amount':60,'el_no':'131','create_time':str(end),'ai_result': 0, 'ai_defects':{'cr':[[1,1]],'bc':[[1,2],[5,5]]},'ai_time':end,'gui_result':0,'gui_defects':{'cr':[[1,1]],'bc':[[5,5],[6,6]]},'gui_time':end}
+info = { 'barcode':'1345', 'cell_type':'mono','cell_size':'half', 'cell_amount':60,'el_no':'131','create_time':str(end),'ai_result': 0, 'ai_defects':{},'ai_time':end,'gui_result':0,'gui_defects':{},'gui_time':end}
+i = json.dumps(info)
+t = requests.post("http://127.0.0.1:8080/add/panel",i)
 print(t.text)

@@ -133,7 +133,7 @@ def add_panel():
   Type = request.form['Type']
   Size = request.form['Size']
   EL_no = request.form['EL_no']
-  star_id = star.insert({'ID': int(ID), 'Barcode' : int(Barcode), 'type': Type,'size': Size,'EL_no': EL_no})
+  star_id = star.insert({'ID': float(ID), 'Barcode' : float(Barcode), 'type': Type,'size': Size,'EL_no': EL_no})
   new_star = star.find_one({'_id': star_id })
   output = {'ID':
    new_star['ID'], 'Barcode': new_star['Barcode'],'Type':new_star['type'], 'Size':new_star['size'],'EL_no':new_star['EL_no']}
@@ -148,7 +148,9 @@ def add_defect():
   By = request.form['By']
   Time = float(request.form['Time'])
   Size = request.form['Size']
-  PanelID = request.form['PanelID']
+  Barcode = request.form['Barcode']
+  I = list(mongo.db.Panel.find({"Barcode" : Barcode}).limit(1).sort([("_id" , -1)]))
+  PanelID = float(I[0]['ID'])
   star.insert({'ID': int(ID), 'type' : Type, 'Position': Position,'by': By,'time': Time,'size': Size})
   s.insert({'ID': int(ID),'PanelID':int(PanelID)})
   return 'ok'
