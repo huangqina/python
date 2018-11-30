@@ -8,19 +8,26 @@ import json
 
 app = Flask(__name__)
 
-app.config['MONGO_DBNAME'] = 'tttt'
-app.config['MONGO_URI'] = 'mongodb://127.0.0.1:12345/tttt'  #如果部署在本上，其中ip地址可填127.0.0.1
+#app.config['MONGO_DBNAME'] = 'ttt'
+app.config['MONGO_URI'] = 'mongodb://127.0.0.1:12345/ttt'  #如果部署在本上，其中ip地址可填127.0.0.1
 
 mongo = PyMongo(app)
 manager = Manager(app)
+mongo.db.panel.create_index([("Barcode", 1)])
+#mongo.db.el
+mongo.db.panel_status.create_index([("time", 1)])
+mongo.db.panel_status.create_index([("Panel_ID", 1)]) 
+mongo.db.defect.create_index([("time", 1)])
+mongo.db.panel_defect.create_index([("Panel_ID", 1)])
+mongo.db.panel_defect.create_index([("Defect_ID", 1)])
 
 @app.route('/test', methods=['POST'])
 def add_user():
   ID = request.data
   i = json.loads(ID)
-  t = i['Defects'][0]['Defect']
-  return jsonify(t)
-  
+  #t = i['Defects'][0]['Defect']
+  return jsonify(i)
+
 @app.route('/add/panel',methods=['POST'])
 def add():
     PANEL = mongo.db.panel
@@ -41,9 +48,9 @@ def add():
         return 'cell_amount wrong'
     if not isinstance(info['el_no'],str):
         return 'el_no should be str'
-    if not isinstance(info['create_time'],str):
-        return 'create_time should be str'
-    if info['ai_result'] not in [0,1]:
+    #if not isinstance(info['create_time'],str):
+       # return 'create_time should be str'
+    if info['ai_result'] not in [0,1,2]:
         return 'ai_result should be 0 or 1'
     if info['ai_defects']:
         for k in info['ai_defects'].keys():
@@ -57,9 +64,9 @@ def add():
                 return 'gui_defects wrong'     
     panel_id = PANEL.insert({'Barcode' : info['barcode'], 'cell_type': info['cell_type'],'cell_size': info['cell_size'],'EL_no':info['el_no'],'create_time':info['create_time']})
     EL.insert({'EL_no': info['el_no']})
-    panel = PANEL.find_one({'_id': panel_id })
-    PANEL_STATUS.insert({'Panel_ID':panel['Barcode'],'time':info['create_time'],'result':info['ai_result'],'by':'AI'})
-    PANEL_STATUS.insert({'Panel_ID':panel['Barcode'],'time':info['create_time'],'result':info['gui_result'],'by':'OP'})
+    #panel = PANEL.find_one({'_id': panel_id })
+    PANEL_STATUS.insert({'Panel_ID':panel_id,'time':info['create_time'],'result':info['ai_result'],'by':'AI'})
+    PANEL_STATUS.insert({'Panel_ID':panel_id,'time':info['create_time'],'result':info['gui_result'],'by':'OP'})
     if info['ai_defects']:
         for k in info['ai_defects'].keys():
             for v in info['ai_defects'][k]:
@@ -77,7 +84,7 @@ def add():
                     defect_id = DEFECT.insert({'Type':k,'Position':v,'by':'OP','time':info['gui_time']})
                     PANEL_DEFECT.insert({'Panel_ID':panel_id,'Defect_ID':defect_id,'by':'OP','Status':'true'})
     return 'OK'
-@app.route('/find/defect', methods=['GET','POST'])
+@app.route('/find/barcode', methods=['GET','POST'])
 def find(): 
     #user = mongo.db.users 
     collection = mongo.db.panel
@@ -86,8 +93,10 @@ def find():
     Barcode = Barcode["Barcode"]
     #Barcode = request.args['Barcode']
     I = list(mongo.db.panel.find({"Barcode" : Barcode}).limit(1).sort([("_id" , -1)]))
-
-    ID = I[0]['_id']
+    if I:
+        ID = I[0]['_id']
+    else: 
+        ID = -1
     #username = user.find_one({"username":username}) 
     #if username: 
     #    return "你查找的用户名：" + username["username"] + " 密码是：" + username["password"] 
@@ -117,9 +126,10 @@ def findOK():
     time = json.loads(data)
     #start = float(request.args['start'])
     #end = float(request.args['end'])
-    start = str(time[0])
-    end = str(time[1])
-
+    #start = str(time[0])
+    #end = str(time[1])
+    start = time[0]
+    end = time[1]
     a=list(mongo.db.panel_status.aggregate([
     {"$match":{'time':{"$gt":start,"$lt":end}}},
     {"$group":{
@@ -141,8 +151,10 @@ def findNG():
     time = json.loads(data)
     #start = float(request.args['start'])
     #end = float(request.args['end'])
-    start = str(time[0])
-    end = str(time[1])
+    #start = str(time[0])
+    #end = str(time[1])
+    start = time[0]
+    end = time[1]
     #start = float(request.args['start'])
     #end = float(request.args['end'])
     a=list(mongo.db.panel_status.aggregate([
