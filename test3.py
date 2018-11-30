@@ -41,7 +41,7 @@ inf = json.dumps(info)
 
 #t = requests.post("http://127.0.0.1:8080/add/panel",inf)
 #a = requests.post("http://127.0.0.1:8080/find/barcode",inf)
-d = requests.post("http://127.0.0.1:8080/find/defect",i)
+d = requests.post("http://127.0.0.1:8888/find/defect",i)
 #b = requests.post("http://127.0.0.1:8080/find/OK",i)
 #c = requests.post("http://127.0.0.1:8080/find/overkillrate",i)
 #for i in [a,b,c]:
