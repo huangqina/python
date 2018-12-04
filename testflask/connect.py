@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*- 
 from flask import Flask#,abort
 from flask import jsonify
 #from flask import render_template
@@ -25,7 +24,7 @@ mongo.db.panel_defect.create_index([("Defect_ID", 1)])
 @app.route('/test', methods=['POST'])
 def add_user():
   ID = request.data
-  i = json.loads(ID.decode('utf-8'))
+  i = json.loads(ID)
   #t = i['Defects'][0]['Defect']
   return jsonify(i)
 
@@ -38,7 +37,7 @@ def add():
     PANEL_DEFECT = mongo.db.panel_defect 
     #AI = mongo.db.ai 
     data = request.data
-    info = json.loads(data.decode('utf-8'))
+    info = json.loads(data)
     if not isinstance(info['barcode'],str):
         return 'barcode should be str'
     if info['cell_type'] not in ['mono','poly']:
@@ -90,7 +89,7 @@ def find():
     #user = mongo.db.users 
     collection = mongo.db.panel
     data = request.data
-    Barcode = json.loads(data.decode('utf-8'))
+    Barcode = json.loads(data)
     Barcode = Barcode["Barcode"]
     #Barcode = request.args['Barcode']
     I = list(mongo.db.panel.find({"Barcode" : Barcode}).limit(1).sort([("_id" , -1)]))
@@ -124,7 +123,7 @@ def find():
 @app.route('/find/OK', methods=['GET','POST']) 
 def findOK(): 
     data = request.data
-    time = json.loads(data.decode('utf-8'))
+    time = json.loads(data)
     #start = float(request.args['start'])
     #end = float(request.args['end'])
     #start = str(time[0])
@@ -149,7 +148,7 @@ def findOK():
 @app.route('/find/NG', methods=['GET','POST']) 
 def findNG(): 
     data = request.data
-    time = json.loads(data.decode('utf-8'))
+    time = json.loads(data)
     #start = float(request.args['start'])
     #end = float(request.args['end'])
     #start = str(time[0])
@@ -177,7 +176,7 @@ def findNG():
 @app.route('/find/missrate', methods=['GET','POST']) 
 def missrate(): 
     data = request.data
-    time = json.loads(data.decode('utf-8'))
+    time = json.loads(data)
    # start = int(request.args['start'])
    # end = int(request.args['end'])
     start = time[0]
@@ -213,7 +212,7 @@ def overkillrate():
     #start = float(request.args['start'])
     #end = float(request.args['end'])
     data = request.data
-    time = json.loads(data.decode('utf-8'))
+    time = json.loads(data)
    # start = int(request.args['start'])
    # end = int(request.args['end'])
     start = time[0]
@@ -242,7 +241,7 @@ def defecttime():
    # start = int(request.args['start'])
    # end = int(request.args['end'])
     data = request.data
-    time = json.loads(data.decode('utf-8'))
+    time = json.loads(data)
    # start = int(request.args['start'])
    # end = int(request.args['end'])
     start = time[0]

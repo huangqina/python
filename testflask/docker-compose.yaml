@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  quotation_api:
+    image: ubuntu-flask:latest
+    volumes:
+      - /home/huangzhihao/python/testflask:/code
+    network_mode: host
+    ports:
+      - "5000:5000"
+    command: python3 code/app.py
+#gunicorn app:app -c gunicorn.conf.py
