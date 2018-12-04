@@ -10,7 +10,7 @@ import json
 app = Flask(__name__)
 
 #app.config['MONGO_DBNAME'] = 'ttt'
-app.config['MONGO_URI'] = 'mongodb://127.0.0.1:12345/ttt'  #如果部署在本上，其中ip地址可填127.0.0.1
+app.config['MONGO_URI'] = 'mongodb://127.0.0.1:27017/ttt'  #如果部署在本上，其中ip地址可填127.0.0.1
 
 mongo = PyMongo(app)
 manager = Manager(app)

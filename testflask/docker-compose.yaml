@@ -1,10 +1,17 @@
 version: "3"
 
 services:
+  db:
+    image: mongo:3.6.9
+    network_mode: host
+    volumes:
+     - ./data:/data/db
+    ports: 
+     - "27017:27017"
   quotation_api:
     image: ubuntu-flask:latest
     volumes:
-      - /home/huangzhihao/python/testflask:/code
+      - ./:/code
     network_mode: host
     ports:
       - "5000:5000"
