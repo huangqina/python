@@ -21,7 +21,10 @@ mongo.db.panel_status.create_index([("Panel_ID", 1)])
 mongo.db.defect.create_index([("time", 1)])
 mongo.db.panel_defect.create_index([("Panel_ID", 1)])
 mongo.db.panel_defect.create_index([("Defect_ID", 1)])
-
+@app.route('/', methods=['GET'])
+def hello():
+  #t = i['Defects'][0]['Defect']
+  return  '<p>192.168.2.25:5000/add/panel</p><p>192.168.2.25:5000/find/barcode     #post barcode</p><p>192.168.2.25:5000/find/NG      #post time</p><p>192.168.2.25:5000/find/OK       #post time</p><p>192.168.2.25:5000/find/missrate     #post time</p><p>192.168.2.25:5000/find/overkillrate     #post time</p><p>192.168.2.25:5000/find/defect     #post time</p>'
 @app.route('/test', methods=['POST'])
 def add_user():
   ID = request.data
@@ -267,4 +270,4 @@ def defecttime():
     return jsonify(k)
 if __name__ == '__main__':
     # app.run(host = '0.0.0.0', por)t = 80, debug = True)
-    app.run(host = '0.0.0.0', port = 8080, debug = True)
+    app.run(host = '0.0.0.0', port = 5000, debug = True)
