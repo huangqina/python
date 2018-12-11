@@ -33,18 +33,18 @@ for i in range(100):
 ti = datetime.datetime(2018,11,23,10,17,45)
 start = time.mktime(ti.timetuple())
 end = time.time()
-#info = { 'barcode':'13245', 'cell_type':'mono','cell_size':'half', 'cell_amount':60,'el_no':'131','create_time':str(end),'ai_result': 0, 'ai_defects':{'cr':[[1,1]],'bc':[[1,2],[5,5]]},'ai_time':end,'gui_result':0,'gui_defects':{'cr':[[1,1]],'bc':[[5,5],[6,6]]},'gui_time':end}
+info = { 'barcode':1, 'cell_type':'mono','cell_size':'half', 'cell_amount':60,'el_no':'131','create_time':str(end),'ai_result': 0, 'ai_defects':{'cr':[[1,1]],'bc':[[1,2],[5,5]]},'ai_time':end,'gui_result':0,'gui_defects':{'cr':[[1,1]],'bc':[[5,5],[6,6]]},'gui_time':end}
 #info = { 'barcode':'145', 'cell_type':'mono','cell_size':'half', 'cell_amount':60,'el_no':'131','create_time':str(end),'ai_result': 1, 'ai_defects':{},'ai_time':end,'gui_result':1,'gui_defects':{},'gui_time':end}
-info = { 'Barcode':'450'}
+#info = { 'Barcode':'708'}
 time = [1543560351.27383,end]
 i = json.dumps(time)
 inf = json.dumps(info)
 
-#t = requests.post("http://127.0.0.1:8080/add/panel",inf)
-a = requests.post("http://127.0.0.1:8080/find/barcode",inf)
+t = requests.post("http://127.0.0.1:5000/add/panel",inf)
+#a = requests.post("http://127.0.0.1:5000/find/overkillrate",i)
 #d = requests.post("http://127.0.0.1:8888/find/defect",i)
 #b = requests.post("http://127.0.0.1:8080/find/OK",i)
-#c = requests.post("http://127.0.0.1:8080/find/overkillrate",i)
+#c = requests.post("http://127.0.0.1:5000/find/overkillrate",i)
 #for i in [a,b,c]:
    # print(i.text)
-print(a.text)
+print(t.text)

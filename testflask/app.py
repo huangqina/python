@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*- 
-from flask import Flask#,abort
+from flask import Flask,abort
 from flask import jsonify
 #from flask import render_template
 from flask import request
@@ -10,7 +10,7 @@ import json
 app = Flask(__name__)
 
 #app.config['MONGO_DBNAME'] = 'ttt'
-app.config['MONGO_URI'] = 'mongodb://127.0.0.1:27017/ttt'  #如果部署在本上，其中ip地址可填127.0.0.1
+app.config['MONGO_URI'] = 'mongodb://127.0.0.1:27018/ttt'  #如果部署在本上，其中ip地址可填127.0.0.1
 
 mongo = PyMongo(app)
 manager = Manager(app)
@@ -22,7 +22,7 @@ mongo.db.defect.create_index([("time", 1)])
 mongo.db.panel_defect.create_index([("Panel_ID", 1)])
 mongo.db.panel_defect.create_index([("Defect_ID", 1)])
 @app.route('/', methods=['GET'])
-def hello():
+def show():
   #t = i['Defects'][0]['Defect']
   return  '<p>192.168.2.25:5000/add/panel</p><p>192.168.2.25:5000/find/barcode     #post barcode</p><p>192.168.2.25:5000/find/NG      #post time</p><p>192.168.2.25:5000/find/OK       #post time</p><p>192.168.2.25:5000/find/missrate     #post time</p><p>192.168.2.25:5000/find/overkillrate     #post time</p><p>192.168.2.25:5000/find/defect     #post time</p>'
 @app.route('/test', methods=['POST'])
@@ -43,30 +43,50 @@ def add():
     data = request.data
     info = json.loads(data.decode('utf-8'))
     if not isinstance(info['barcode'],str):
+        
+        #raise TypeError("barcode should be str")
         return 'barcode should be str'
     if info['cell_type'] not in ['mono','poly']:
+        #raise TypeError('cell_type wrong')
         return 'cell_type wrong'
     if info['cell_size'] not in ['half','full']:
+        #raise TypeError('cell_size wrong')
         return 'cell_size wrong'
     if info['cell_amount'] not in [60,72,120,144]:
+        #raise TypeError('cell_amount wrong')
         return 'cell_amount wrong'
     if not isinstance(info['el_no'],str):
+        #raise TypeError('el_no should be str')
         return 'el_no should be str'
-    #if not isinstance(info['create_time'],str):
-       # return 'create_time should be str'
+    if not isinstance(info['create_time'],float):
+        return 'create_time should be float'
     if info['ai_result'] not in [0,1,2]:
-        return 'ai_result should be 0 or 1'
+        #raise TypeError('ai_result should be 0 or 1')
+        return 'ai_result should be 0 or 1 or 2'
+    if not isinstance(info['ai_defects'], dict):
+        #raise TypeError('ai_defects should be list')
+        return 'ai_defects should be dict'
     if info['ai_defects']:
         for k in info['ai_defects'].keys():
             if k not in ['cr','cs','bc','mr']:
+                #raise TypeError('ai_defects wrong')
                 return 'ai_defects wrong'
+    if not isinstance(info['ai_time'],float):
+        return 'ai_time should be float'
     if info['gui_result'] not in [0,1]:
+        #raise TypeError('gui_result should be 0 or 1')
         return 'gui_result should be 0 or 1'
+    if not isinstance(info['gui_defects'], dict):
+        #raise TypeError('gui_defects should be list')
+        return 'gui_defects should be dict'
     if info['gui_defects']:
         for k in info['gui_defects'].keys():
             if k not in ['cr','cs','bc','mr']:
+                #raise TypeError('gui_defects wrong')
                 return 'gui_defects wrong'     
-    panel_id = PANEL.insert({'Barcode' : info['barcode'], 'cell_type': info['cell_type'],'cell_size': info['cell_size'],'EL_no':info['el_no'],'create_time':info['create_time']})
+    if not isinstance(info['gui_time'],float):
+        return 'gui_time should be float'
+    panel_id = PANEL.insert({'Barcode' : info['barcode'], 'cell_type': info['cell_type'],'cell_size': info['cell_size'],'cell_amount': info['cell_amount'],'EL_no':info['el_no'],'create_time':info['create_time']})
     EL.insert({'EL_no': info['el_no']})
     #panel = PANEL.find_one({'_id': panel_id })
     PANEL_STATUS.insert({'Panel_ID':panel_id,'time':info['create_time'],'result':info['ai_result'],'by':'AI'})

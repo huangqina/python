@@ -3,7 +3,7 @@ version: "3"
 services:
   db:
     image: mongo:3.6.9
-    network_mode: host
+
     volumes:
      - ./data:/data/db
     ports: 

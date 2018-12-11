@@ -24,10 +24,10 @@ def test():
                 gui_d[k].append(l)
 
         end = time.time()
-        info = { 'barcode':str(barcode), 'cell_type':'mono','cell_size':'half', 'cell_amount':60,'el_no':'131','create_time':end,'ai_result': 1, 'ai_defects':ai_d,'ai_time':end,'gui_result':1,'gui_defects':gui_d,'gui_time':end}
+        info = { 'barcode':str(barcode), 'cell_type':'mono','cell_size':'half', 'cell_amount':60,'el_no':'131','create_time':end,'ai_result': 0, 'ai_defects':ai_d,'ai_time':end,'gui_result':0,'gui_defects':gui_d,'gui_time':end}
 
         inf = json.dumps(info)
-        t = requests.post("http://127.0.0.1:8080/add/panel",inf)
+        t = requests.post("http://127.0.0.1:5000/add/panel",inf)
         print(t.text)
 threads = []
 t1 = threading.Thread(target=test)
