@@ -10,10 +10,8 @@ services:
      - "27017:27017"
   quotation_api:
     image: ubuntu-flask:latest
-    volumes:
-      - ./:/code
     network_mode: host
     ports:
       - "5000:5000"
-    command: python3 code/app.py
-#gunicorn app:app -c gunicorn.conf.py
+    command: gunicorn interface:app -c gunicorn.conf.py
+#python3 code/app.py

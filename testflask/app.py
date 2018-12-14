@@ -8,12 +8,19 @@ from flask_script import Manager
 import json
 
 app = Flask(__name__)
+app.config.update(
+    MONGO_URI='mongodb://192.168.2.25:27017/ttt',
+    #MONGO_USERNAME='bjhee',
+    #MONGO_PASSWORD='111111',
+    MONGO_REPLICA_SET='rs',
+    #MONGO_READ_PREFERENCE='SECONDARY_PREFERRED'
 
+)
 #app.config['MONGO_DBNAME'] = 'ttt'
-app.config['MONGO_URI'] = 'mongodb://127.0.0.1:27018/ttt'  #如果部署在本上，其中ip地址可填127.0.0.1
-
+#app.config['MONGO_URI'] = 'mongodb://127.0.0.1:27017'  #如果部署在本上，其中ip地址可填127.0.0.1
+#app.config['MONGO_DBNAME'] = 'ttt'
 mongo = PyMongo(app)
-manager = Manager(app)
+#manager = Manager(app)
 mongo.db.panel.create_index([("Barcode", 1)])
 #mongo.db.el
 mongo.db.panel_status.create_index([("time", 1)])

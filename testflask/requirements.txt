@@ -1,5 +1,7 @@
 Flask
 Flask-Pymongo
+pymongo
 Flask-Script
 gunicorn
+Flask-APScheduler
 gevent 
